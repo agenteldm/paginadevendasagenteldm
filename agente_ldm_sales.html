@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agente LDM - Livre da Manipulação</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #0A1F44 0%, #006B3F 50%, #E8B400 100%);
+            background-attachment: fixed;
+        }
+        
+        .tech-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, #fff 2px, #fff 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, #fff 2px, #fff 4px);
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #0A1F44 0%, #006B3F 100%);
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(232,180,0,0.1)" stroke-width="0.5"/><circle cx="50" cy="50" r="30" fill="none" stroke="rgba(232,180,0,0.1)" stroke-width="0.5"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .logo-container {
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .logo-title {
+            font-size: 72px;
+            font-weight: 900;
+            color: #006B3F;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3), 0 0 20px rgba(232,180,0,0.4);
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            line-height: 1;
+        }
+        
+        .logo-agente {
+            font-size: 48px;
+            font-weight: 700;
+            color: #FFFFFF;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 24px;
+            color: #E8B400;
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            letter-spacing: 3px;
+            margin-top: 10px;
+        }
+        
+        .shield-icon {
+            display: inline-block;
+            width: 40px;
+            height: 45px;
+            background: linear-gradient(135deg, #E8B400, #FFD700);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            margin-bottom: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #0A1F44 0%, #1a3a5c 100%);
+            color: white;
+            padding: 60px 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #006B3F, #E8B400, #006B3F);
+        }
+        
+        .headline {
+            font-size: 42px;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .headline-highlight {
+            color: #E8B400;
+            text-shadow: 0 0 20px rgba(232,180,0,0.5);
+        }
+        
+        .subheadline {
+            font-size: 22px;
+            line-height: 1.5;
+            margin-bottom: 30px;
+            color: #B0B3B8;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #E8B400, #FFD700);
+            color: #0A1F44;
+            font-size: 24px;
+            font-weight: 800;
+            padding: 20px 50px;
+            text-decoration: none;
+            border-radius: 50px;
+            box-shadow: 0 8px 20px rgba(232,180,0,0.4);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 3px solid #FFD700;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(232,180,0,0.6);
+        }
+        
+        .price {
+            font-size: 32px;
+            margin-top: 15px;
+            color: #00C853;
+            font-weight: 900;
+            text-shadow: 0 0 10px rgba(0, 200, 83, 0.3);
+        }
+        
+        .section {
+            padding: 60px 30px;
+        }
+        
+        .section-alt {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        
+        .section-title {
+            font-size: 36px;
+            font-weight: 800;
+            color: #0A1F44;
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #006B3F, #E8B400);
+        }
+        
+        .product-description {
+            font-size: 20px;
+            line-height: 1.8;
+            color: #333;
+            max-width: 750px;
+            margin: 0 auto 40px;
+            text-align: center;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .benefit-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #E8B400;
+            transition: transform 0.3s ease;
+        }
+        
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .benefit-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+        
+        .benefit-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #006B3F;
+            margin-bottom: 10px;
+        }
+        
+        .benefit-text {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .testimonials {
+            display: grid;
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .testimonial {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-top: 4px solid #006B3F;
+        }
+        
+        .testimonial-text {
+            font-size: 18px;
+            font-style: italic;
+            color: #333;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .testimonial-author {
+            font-size: 16px;
+            font-weight: 700;
+            color: #006B3F;
+        }
+        
+        .testimonial-role {
+            font-size: 14px;
+            color: #777;
+        }
+        
+        .urgency-box {
+            background: linear-gradient(135deg, #006B3F, #0A1F44);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 40px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .urgency-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: #E8B400;
+        }
+        
+        .urgency-text {
+            font-size: 20px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+        
+        .movement-section {
+            background: linear-gradient(135deg, #0A1F44, #006B3F);
+            color: white;
+            padding: 60px 30px;
+            text-align: center;
+        }
+        
+        .movement-title {
+            font-size: 38px;
+            font-weight: 900;
+            margin-bottom: 25px;
+            color: #E8B400;
+        }
+        
+        .movement-text {
+            font-size: 22px;
+            line-height: 1.7;
+            max-width: 800px;
+            margin: 0 auto 30px;
+        }
+        
+        .guarantee-box {
+            background: #f8f9fa;
+            border: 3px solid #006B3F;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 40px auto;
+            max-width: 700px;
+        }
+        
+        .guarantee-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #006B3F;
+            margin-bottom: 15px;
+        }
+        
+        .guarantee-text {
+            font-size: 18px;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .faq {
+            margin-top: 40px;
+        }
+        
+        .faq-item {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #E8B400;
+        }
+        
+        .faq-question {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0A1F44;
+            margin-bottom: 10px;
+        }
+        
+        .faq-answer {
+            font-size: 17px;
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .final-cta {
+            background: linear-gradient(135deg, #006B3F, #0A1F44);
+            padding: 80px 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        .final-cta-title {
+            font-size: 42px;
+            font-weight: 900;
+            margin-bottom: 30px;
+            color: #E8B400;
+        }
+        
+        .seal {
+            display: inline-block;
+            background: #E8B400;
+            color: #0A1F44;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 18px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(232,180,0,0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .headline {
+                font-size: 32px;
+            }
+            
+            .subheadline {
+                font-size: 18px;
+            }
+            
+            .logo-title {
+                font-size: 48px;
+            }
+            
+            .logo-agente {
+                font-size: 32px;
+            }
+            
+            .cta-button {
+                font-size: 20px;
+                padding: 18px 40px;
+            }
+            
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="tech-pattern"></div>
+    
+    <div class="container">
+        <!-- Header com Logo -->
+        <div class="header">
+            <div class="logo-container">
+                <div class="shield-icon"></div>
+                <div class="logo-agente">Agente</div>
+                <div class="logo-title">LDM</div>
+                <div class="logo-subtitle">LIVRE DA MANIPULAÇÃO</div>
+            </div>
+            <div class="seal">✓ Análise Independente</div>
+        </div>
+        
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1 class="headline">
+                A Primeira <span class="headline-highlight">IA Brasileira</span> Capaz de Revelar o Viés Político Escondido nas Manchetes
+            </h1>
+            <p class="subheadline">
+                Descubra em segundos se uma notícia é neutra, tendenciosa ou manipulada — e veja quais palavras estão sendo usadas para influenciar você.
+            </p>
+            <a href="#comprar" class="cta-button">
+                🚀 Quero Desbloquear o Agente LDM Agora
+            </a>
+            <div class="price">Por apenas R$ 27,00</div>
+        </div>
+        
+        <!-- Apresentação do Produto -->
+        <div class="section">
+            <h2 class="section-title">O Que É o Agente LDM?</h2>
+            <p class="product-description">
+                O <strong>Agente LDM</strong> é uma inteligência artificial revolucionária, desenvolvida por brasileiros, que analisa textos e notícias para revelar o grau de tendência ideológica presente nas palavras e expressões utilizadas. Com apenas 1 clique, você descobre se está sendo manipulado pela mídia.
+            </p>
+            <p class="product-description">
+                <strong>Simples. Rápido. Imparcial.</strong> Uma ferramenta essencial para quem valoriza a liberdade de expressão e deseja pensar com clareza em tempos de polarização.
+            </p>
+        </div>
+        
+        <!-- Benefícios -->
+        <div class="section section-alt">
+            <h2 class="section-title">O Que Você Vai Conquistar</h2>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">🎯</div>
+                    <h3 class="benefit-title">Análise em 1 Clique</h3>
+                    <p class="benefit-text">Cole qualquer notícia e receba instantaneamente o percentual de viés ideológico. Simples, rápido e preciso.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">📊</div>
+                    <h3 class="benefit-title">Termômetro da Verdade</h3>
+                    <p class="benefit-text">Veja em uma escala visual o quanto uma notícia tende para a esquerda, direita ou se mantém neutra.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">🔍</div>
+                    <h3 class="benefit-title">Identificação de Palavras-Chave</h3>
+                    <p class="benefit-text">Descubra exatamente quais termos estão sendo usados para manipular sua percepção da realidade.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">🧠</div>
+                    <h3 class="benefit-title">Desenvolva Pensamento Crítico</h3>
+                    <p class="benefit-text">Aprenda a identificar manipulações sutis de linguagem e torne-se imune à propaganda disfarçada de jornalismo.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">🛡️</div>
+                    <h3 class="benefit-title">Proteção Contra Manipulação</h3>
+                    <p class="benefit-text">Não seja mais vítima de narrativas enviesadas. Tenha o poder de decidir com base em fatos, não em ideologia.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">⚡</div>
+                    <h3 class="benefit-title">Acesso Vitalício</h3>
+                    <p class="benefit-text">Pague uma única vez e tenha acesso para sempre, incluindo todas as atualizações futuras sem custo adicional.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Prova Social -->
+        <div class="section">
+            <h2 class="section-title">O Que Dizem Nossos Usuários</h2>
+            <div class="testimonials">
+                <div class="testimonial">
+                    <p class="testimonial-text">
+                        "O Agente LDM me abriu os olhos! Nunca imaginei que as manchetes fossem tão enviesadas. Agora eu consigo ver a manipulação antes de compartilhar qualquer notícia."
+                    </p>
+                    <div class="testimonial-author">Carlos A.</div>
+                    <div class="testimonial-role">Jornalista</div>
+                </div>
+                
+                <div class="testimonial">
+                    <p class="testimonial-text">
+                        "Uso todos os dias antes de compartilhar notícias com meus alunos. É como ter um detector de viés político no bolso. Indispensável para quem trabalha com educação!"
+                    </p>
+                    <div class="testimonial-author">Luciana M.</div>
+                    <div class="testimonial-role">Professora</div>
+                </div>
+                
+                <div class="testimonial">
+                    <p class="testimonial-text">
+                        "Paguei R$27 e me senti participando de algo muito maior: a luta pela verdade. O Agente LDM é a ferramenta que faltava para combater a desinformação."
+                    </p>
+                    <div class="testimonial-author">Felipe S.</div>
+                    <div class="testimonial-role">Empreendedor</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Urgência -->
+        <div class="section section-alt">
+            <div class="urgency-box">
+                <h3 class="urgency-title">⏰ Atenção: Valor Promocional</h3>
+                <p class="urgency-text">
+                    O preço de <strong>R$27,00</strong> é válido apenas durante a fase inicial de testes. Estamos construindo a maior comunidade de análise política do Brasil, e quem entrar agora terá acesso vitalício com todas as atualizações futuras <strong>sem pagar mais nada</strong>.
+                </p>
+                <p class="urgency-text">
+                    Em breve, o valor será reajustado. Garanta sua vaga agora e faça parte da história!
+                </p>
+                <a href="#comprar" class="cta-button">
+                    ✓ Garantir Meu Acesso Vitalício Agora
+                </a>
+            </div>
+        </div>
+        
+        <!-- Movimento -->
+        <div class="movement-section">
+            <h2 class="movement-title">Você Não Está Comprando um Produto. Está Participando de um Movimento.</h2>
+            <p class="movement-text">
+                Ao desbloquear o Agente LDM, você se une a milhares de brasileiros que decidiram não aceitar mais a manipulação da informação. Juntos, estamos construindo a maior ferramenta de análise política independente do país.
+            </p>
+            <p class="movement-text">
+                <strong>Esta é a sua chance de fazer parte da revolução da verdade.</strong> Não deixe que outros decidam o que você deve pensar. Retome o controle da sua própria opinião.
+            </p>
+            <a href="#comprar" class="cta-button">
+                🇧🇷 Quero Fazer Parte do Movimento
+            </a>
+        </div>
+        
+        <!-- Garantia -->
+        <div class="section">
+            <div class="guarantee-box">
+                <h3 class="guarantee-title">🔒 Pagamento Seguro e Acesso Imediato</h3>
+                <p class="guarantee-text">
+                    Pagamento único de R$27,00 processado de forma 100% segura. Após a confirmação, você recebe acesso instantâneo ao Agente LDM, com suporte completo e todas as atualizações futuras incluídas. Sem mensalidades. Sem surpresas.
+                </p>
+            </div>
+        </div>
+        
+        <!-- FAQ -->
+        <div class="section section-alt">
+            <h2 class="section-title">Perguntas Frequentes</h2>
+            <div class="faq">
+                <div class="faq-item">
+                    <h4 class="faq-question">Como funciona o Agente LDM?</h4>
+                    <p class="faq-answer">
+                        Você cola o texto de qualquer notícia ou artigo, e nossa inteligência artificial analisa as palavras e expressões utilizadas, revelando o percentual de viés ideológico presente. Tudo em segundos, de forma visual e fácil de entender.
+                    </p>
+                </div>
+                
+                <div class="faq-item">
+                    <h4 class="faq-question">Preciso pagar mensalidade?</h4>
+                    <p class="faq-answer">
+                        Não! O investimento de R$27,00 é único. Você paga uma vez e tem acesso vitalício, incluindo todas as melhorias e atualizações que desenvolvermos no futuro.
+                    </p>
+                </div>
+                
+                <div class="faq-item">
+                    <h4 class="faq-question">O Agente LDM é imparcial?</h4>
+                    <p class="faq-answer">
+                        Sim. Nossa tecnologia foi desenvolvida para identificar padrões linguísticos associados a diferentes espectros ideológicos, sem favorecer nenhum lado. O objetivo é revelar o viés, não criar um novo.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CTA Final -->
+        <div class="final-cta" id="comprar">
+            <h2 class="final-cta-title">Está Pronto Para Ver a Verdade Por Trás das Manchetes?</h2>
+            <p class="subheadline">
+                Junte-se a milhares de brasileiros que já estão usando o Agente LDM para desmascarar a manipulação da mídia.
+            </p>
+            <a href="https://pay.kiwify.com.br/seu-link-aqui" class="cta-button">
+                🎯 Acessar Por Apenas R$27
+            </a>
+            <div class="price">Pagamento Único • Acesso Vitalício • Suporte Incluído</div>
+        </div>
+    </div>
+</body>
+</html>
